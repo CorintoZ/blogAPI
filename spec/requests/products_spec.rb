@@ -79,10 +79,11 @@ RSpec.describe 'Products API', type: :request do
 
   # PUT /products/:id
   describe 'PUT /products/:id' do
-    let(:valid_attributes) { { name: 'Shopping', description: Faker::Lorem.sentence, price: -5, stock: 5 } }
+    let(:product) { { name: 'Shopping', description: Faker::Lorem.sentence, price: 6, stock: 5 } }
+
 
     context 'when the record exists' do
-      before { put "/products/#{product_id}", params: valid_attributes }
+      before { put "/products/#{2}", params: product }
       it 'updates the record' do
         expect(response.body).to be_empty
       end
@@ -90,11 +91,11 @@ RSpec.describe 'Products API', type: :request do
         expect(response).to have_http_status(204)
       end
     end
-    context 'when the price and stock are positive' do
-      before { get "/products/#{product_id}" }
-      it 'the price is not negativa' do
-        print json
-        expect(json['price']).to be >= 0
+    let(:product) { { id: product_id, name: 'Shopping', description: Faker::Lorem.sentence, price: -5, stock: -5 } }
+    before { put "/products/#{product_id}", params: product }
+    context 'when the price or stock are negative' do
+      it 'the price is negative' do
+        expect(response).to have_http_status(422)
       end
     end
   end
