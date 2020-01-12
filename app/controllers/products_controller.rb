@@ -19,8 +19,11 @@ class ProductsController < ApplicationController
 
   # PUT /products/:id
   def update
-    @product.update(product_params)
-    head :no_content
+    if @product.update(product_params)
+      json_response(@product)
+    else    
+      render json: @product.errors, status: :unprocessable_entity   
+    end
   end
 
   # DELETE /products/:id
